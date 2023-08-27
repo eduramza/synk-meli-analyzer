@@ -3,7 +3,7 @@ from attr import dataclass
 
 
 @dataclass
-class ApiInfo:
+class PagingInfo:
     total: int
     offset: int
     limit: int
@@ -17,11 +17,11 @@ class ApiInfo:
 
 @dataclass
 class ApiResponse:
-    info: ApiInfo 
+    info: PagingInfo 
     data: object
 
     def to_dict(self):
         return {
-            'info': self.info.to_dict(),
+            'paging_info': self.info.to_dict(),
             'data': self.data
         }

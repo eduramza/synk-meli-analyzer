@@ -6,6 +6,7 @@ from models.seller_model import Seller
 @dataclass
 class Product:
     id: str
+    catalog_product_id: str
     title: str
     price: float
     sold_quantity: int
@@ -21,6 +22,7 @@ class Product:
     def to_dict(self):
         return {
             'id': self.id,
+            'catalog_product_id': self.catalog_product_id,
             'title': self.title,
             'price': self.price,
             'sold_quantity': self.sold_quantity,

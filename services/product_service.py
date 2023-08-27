@@ -1,4 +1,5 @@
 from datetime import datetime
+from models.outcome_model import ApiResponse, PagingInfo
 from models.product_model import Product
 from models.seller_model import Seller
 from services.repositories.mercado_livre_repository import MercadoLivreRepository
@@ -36,6 +37,7 @@ class ProductService:
 
         product = Product(
             id=product_data.get('id'),
+            catalog_product_id=product_data.get('catalog_product_id'),
             title=product_data.get('title'),
             price=price,
             sold_quantity=sold_quantity,
@@ -49,11 +51,20 @@ class ProductService:
             month_revenue=self.get_month_revenue(price, daily_sells),
         )
         return product
+    
+    def configure_pagination(self, paging):
+        return {
+            'total': paging['total'],
+            'offset': paging['offset'],
+            'limit': paging['limit']
+        }
 
-    def get_product_summary_by_name(self, product_name):
-        product_search_result = self.ml_service.fetch_product_by_name(product_name)
+    def get_product_summary_by_name(self, product_name, offset=0, limit=20):
+        product_search_result = self.ml_service.fetch_product_by_name(product_name, offset, limit)
         products_ids = []
         #add sellers nickname to final result
+
+        page_info = self.configure_pagination(product_search_result['paging'])
 
         for product_a in product_search_result['results']:
             products_ids.append(product_a.get('id'))
@@ -64,4 +75,9 @@ class ProductService:
         for response in products_response:
             result.append(self.create_product(response).to_dict())
 
-        return result
+        outcome_result = ApiResponse(
+            info=PagingInfo(**page_info),
+            data=result
+        )
+
+        return outcome_result.to_dict()
