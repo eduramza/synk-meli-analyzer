@@ -26,8 +26,8 @@ class MercadoLivreRepository:
             raise Exception('Nao foi possivel realizar a operacao')
         return response.json()
 
-    def fetch_product_by_name(self, product_name):
-        endpoint = f'sites/MLB/search?q={product_name}&limit=20'
+    def fetch_product_by_name(self, product_name, offset=0, limit=20):
+        endpoint = f'sites/MLB/search?q={product_name}&limit={limit}&offset={offset}'
         url = self.construct_url(endpoint)
         return self.api_request('GET', url)
     
