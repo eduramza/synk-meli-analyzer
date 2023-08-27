@@ -27,7 +27,13 @@ class MercadoLivreRepository:
         return response.json()
 
     def fetch_product_by_name(self, product_name):
-        endpoint = f'sites/MLB/search?q={product_name}'
+        endpoint = f'sites/MLB/search?q={product_name}&limit=20'
+        url = self.construct_url(endpoint)
+        return self.api_request('GET', url)
+    
+    def get_multi_products_by_id(self, product_ids):
+        attributes = ','.join(['id', 'title', 'price', 'sold_quantity', 'thumbnail', 'seller_id', 'seller_address', 'date_created'])
+        endpoint = f'items?ids={",".join(product_ids)}&attributes={attributes}'
         url = self.construct_url(endpoint)
         return self.api_request('GET', url)
     
